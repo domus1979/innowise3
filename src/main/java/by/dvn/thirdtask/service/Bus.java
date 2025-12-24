@@ -1,14 +1,23 @@
-package by.dvn.thirdtask.entity;
+package by.dvn.thirdtask.service;
 
-import java.util.concurrent.Callable;
+import by.dvn.thirdtask.entity.Box;
+import by.dvn.thirdtask.entity.BusDepot;
 
-public class Bus implements Callable<Integer> {
+import java.util.List;
+
+public class Bus implements Runnable {
 
     @Override
-    public Integer call() throws Exception {
+    public void run() {
 
         BusDepot busDepot = BusDepot.getInstance();
+        List<Box> boxes = busDepot.getBoxes();
 
-        return 0;
+        for (Box box : boxes) {
+            if (box.isAvailable()) {
+
+            }
+        }
+
     }
 }

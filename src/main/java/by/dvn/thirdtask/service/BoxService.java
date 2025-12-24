@@ -1,5 +1,7 @@
-package by.dvn.thirdtask.entity;
+package by.dvn.thirdtask.service;
 
+import by.dvn.thirdtask.entity.Box;
+import by.dvn.thirdtask.entity.BusDepot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

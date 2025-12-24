@@ -37,3 +37,17 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# All log`s file to ignore
+*.log
+# Temporary files
+*.tmp
+*.bak*
+*.iml
+# Ignoring all files, in idea`s directory.
+.idea/
+out/
+target/
+# maven
+mvnv
+mvnv.cmd

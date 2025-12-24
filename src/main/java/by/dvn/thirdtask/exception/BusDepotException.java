@@ -1,19 +1,19 @@
-package by.dvn.secondtask.exception;
+package by.dvn.thirdtask.exception;
 
-public class TextProcessingException extends Exception {
-    public TextProcessingException() {
+public class BusDepotException extends Exception {
+    public BusDepotException() {
         super();
     }
 
-    public TextProcessingException(String message) {
+    public BusDepotException(String message) {
         super(message);
     }
 
-    public TextProcessingException(String message, Throwable cause) {
+    public BusDepotException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TextProcessingException(Throwable cause) {
+    public BusDepotException(Throwable cause) {
         super(cause);
     }
 }
