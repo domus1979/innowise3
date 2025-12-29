@@ -1,17 +1,49 @@
 package by.dvn.thirdtask;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import by.dvn.thirdtask.service.BoxService;
+import by.dvn.thirdtask.entity.Bus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+public class Main {
+    private static final Logger log = LogManager.getLogger(Main.class);
+
+    public static void main(String[] args) {
+        log.info("Start work.");
+
+        BoxService boxService = new BoxService();
+        Thread threadBoxService = new Thread(boxService);
+        threadBoxService.start();
+
+        List<Bus> busList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Bus bus = new Bus(i, 60);
+            busList.add(bus);
         }
+
+        List<Thread> threadList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Thread t = new Thread(busList.get(i));
+            threadList.add(t);
+            t.start();
+        }
+
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (Thread t : threadList) {
+            t.interrupt();
+        }
+        threadBoxService.interrupt();
+
+        log.info("Stop work.");
+
     }
 }

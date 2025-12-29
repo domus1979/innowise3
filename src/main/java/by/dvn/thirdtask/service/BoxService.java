@@ -7,54 +7,35 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class BoxService implements Runnable {
     private static final Logger log = LogManager.getLogger();
-    private boolean stopBoxService = false;
-    private ReentrantLock lock;
-    private Box box;
+    private static final int FUEL_VOLUME = 500;
+    private static final int SERVICE_TIME_PERIOD = 5;
 
-    public BoxService(Box box, ReentrantLock lock) {
-        this.lock = lock;
-        this.box = box;
-    }
-
-    public void stopBoxService() {
-        this.stopBoxService = true;
+    public BoxService() {
     }
 
     @Override
     public void run() {
         BusDepot busDepot = BusDepot.getInstance();
         List<Box> boxes = busDepot.getBoxes();
+        log.info("Start box service.");
 
-        while (true) {
-
-            for (Box box : boxes) {
-                if (box.isAvailable()) {
-                    lock.lock();
-                    try {
-                        box.setAvailable(false);
-                        box.setFuelAmount(box.getFuelAmount() + 10);
-                        box.setPartsNumber(box.getPartsNumber() + 5);
-                        box.setAvailable(true);
-                    } finally {
-                        lock.unlock();
-                    }
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                for (Box box : boxes) {
+                    int fuel = Integer.min(box.getFuelAmount() + FUEL_VOLUME, box.getMaxFuelAmount());
+                    box.setFuelAmount(fuel);
+                    log.info("Refuel box N " + box.getNumber());
                 }
+                Thread.sleep(TimeUnit.SECONDS.toMillis(SERVICE_TIME_PERIOD));
             }
-
-            try {
-                wait(TimeUnit.SECONDS.toMillis(5));
-            } catch (InterruptedException e) {
-                log.error("Can`t wait for service box.");
-            }
-
-            if (this.stopBoxService) {
-                break;
-            }
+        } catch (InterruptedException e) {
+            log.error("Stop box service! " + e.getMessage());
         }
+
+        log.info("Stop box service.");
 
     }
 }
